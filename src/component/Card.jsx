@@ -32,7 +32,7 @@ export default function Card({ value, handleDelete }) {
             handleActive(value);
           }}
           className="circile-icons"
-          src="/src/assets/empty.png"
+          src="/assets/empty.png"
           alt=""
         />
       ) : (
@@ -42,7 +42,7 @@ export default function Card({ value, handleDelete }) {
             handleComplete(value);
           }}
           className="circile-icons"
-          src="/src/assets/circle.png"
+          src="/assets/circle.png"
           alt=""
         />
       )}
@@ -58,7 +58,7 @@ export default function Card({ value, handleDelete }) {
       <img
         onClick={() => handleDelete(value.id)}
         className="delete-icon"
-        src="/src/assets/no.png"
+        src="/assets/no.png"
         alt=""
       />
     </div>
