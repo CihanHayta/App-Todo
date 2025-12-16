@@ -1,0 +1,79 @@
+#root {
+
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  background-color: #222121;
+}
+
+.container {
+ height: 100vh;        /* sticky çalışır */
+  overflow: visible;    /* sticky için gerekli */
+  padding-top: 20px;
+}
+
+.title {
+  font-size: 45px;
+  font-weight: 200;
+  color: #b83f45;
+}
+.input-wrapper{
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+}
+
+
+.input {
+  width: 450px;
+  height: 40px;
+  text-align: center;
+  box-shadow: 4px gray;
+}
+
+.input:focus {
+  /* outline olmayinca calismiyor */
+  outline: none;
+
+  border: 2px solid #b83f45 !important;
+  border-color: #b83f45;
+}
+.arrow-img{
+  width: 24px;
+  height: 24px;
+  display: block;
+ 
+}
+
+.input-down{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 22px;
+}
+.input-down-inner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.input-down-inner a{
+  text-decoration: none;
+  color: white;
+}
+
+.input-down-inner a:hover{
+  padding: 4px;
+  border: 1px solid #b83f45;
+}
+
+.value-wrapper{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid gray; 
+}

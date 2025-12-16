@@ -1,0 +1,23 @@
+.Card-Container {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid gray;
+  gap: 12px;
+  img {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.delete-icon {
+  margin-left: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.Card-Container:hover .delete-icon {
+  opacity: 1;
+  visibility: visible;
+}
