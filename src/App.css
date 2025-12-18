@@ -1,32 +1,43 @@
 #root {
-
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
 
-body {
+.dark {
   background-color: #222121;
+  color: white;
+}
+
+.light {
+  background: #F6F9FF;
+  color: #111;
 }
 
 .container {
- height: 100vh;        /* sticky çalışır */
-  overflow: visible;    /* sticky için gerekli */
+  height: 100%; /* sticky çalışır */
+  overflow: visible; /* sticky için gerekli */
   padding-top: 20px;
+  padding-inline: 20px;
+  /* tema yumusatiyor gecisleri  */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-
+.tema-img{
+margin-bottom: 20px;
+  height: 50px;
+  width: 50px;
+}
 .title {
   font-size: 45px;
   font-weight: 200;
   color: #b83f45;
 }
-.input-wrapper{
+.input-wrapper {
   position: sticky;
   top: 0;
   display: flex;
   align-items: center;
 }
-
 
 .input {
   width: 450px;
@@ -42,38 +53,38 @@ body {
   border: 2px solid #b83f45 !important;
   border-color: #b83f45;
 }
-.arrow-img{
+.arrow-img {
   width: 24px;
   height: 24px;
   display: block;
- 
 }
 
-.input-down{
+.input-down {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-left: 22px;
+  padding-block: 20px;
 }
-.input-down-inner{
+.input-down-inner {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
 }
-.input-down-inner a{
+.input-down-inner a {
   text-decoration: none;
   color: white;
 }
 
-.input-down-inner a:hover{
+.input-down-inner a:hover {
   padding: 4px;
   border: 1px solid #b83f45;
 }
 
-.value-wrapper{
+.value-wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid gray; 
+  border-bottom: 1px solid gray;
 }
