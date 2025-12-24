@@ -73,13 +73,15 @@ margin-bottom: 20px;
   gap: 12px;
 }
 .input-down-inner a {
+  border: 1px solid transparent;
+    padding: 4px;
   text-decoration: none;
   color: white;
 }
 
 .input-down-inner a:hover {
-  padding: 4px;
-  border: 1px solid #b83f45;
+
+   border-color: #b83f45;
 }
 
 .value-wrapper {

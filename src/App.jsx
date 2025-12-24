@@ -1,203 +1,225 @@
 import "./App.css";
 import { useEffect, useRef, useState } from "react";
 import Card from "./component/Card";
+import { ToastContainer, toast,Bounce } from 'react-toastify';
+import { AddPlaySound, ClearAllPlaySound, DeletePlaySound, UpdatePlaySound } from "./Sound";
 
 function App() {
+ 
+  const [filter, SetFilter] = useState("all");
   const inputRef = useRef();
 
-  //LocalStogre siralama onemli yokse veri gelmez ust satirda kaydet orta satirda cagir son satirda 
-  //useeffect ile value izle ama statin altinda yap ki gelen veri once state sonra useffect ulassin
 
-  const LocalSaveTodo = (value) => {
-    localStorage.setItem("value", JSON.stringify(value));
-  };
 
-  const getLocalTodo = () => {
-    const data = localStorage.getItem("value");
+
+  //?LocalStogre ekleyecegiz
+
+
+//!Theme local
+const ThemeLocal=()=>{
+const data= localStorage.getItem("theme")
+return data ? data : ""
+}
+ const [theme, SetTheme] = useState(ThemeLocal);
+
+useEffect(()=>{
+  localStorage.setItem("theme",theme)
+},[theme])
+
+  const ToogleTheme=()=>{    
+    SetTheme(theme => theme === "dark" ? "light" : "dark");
+  }
+//!TODO Local
+  const getLocal = () => {
+    const data = localStorage.getItem("todo");
     return data ? JSON.parse(data) : [];
   };
-
-    const [value, setValue] = useState(() => getLocalTodo());
+  const [todos, SetTodos] = useState(getLocal);
 
   useEffect(() => {
-    LocalSaveTodo(value);
-  }, [value]);
+    localStorage.setItem("todo", JSON.stringify(todos));
+  }, [todos]); //todos her degistikce guncel halini set eder
 
+  //? localdeki verileri kaldirmak icin kullancagiz
 
-  //? default olarak active cizecek map
-  const [filter, setFilter] = useState("all");
-
-  //!Theme local cagir
-  const getTheme = () => {
-    return localStorage.getItem("theme" || "dark");
+  const ClearAll = () => {
+    let isSure = confirm("Tamemen silinecek tum todolar ");
+    if (isSure === true) {
+      localStorage.clear();
+      SetTodos([]);
+    }
+    ClearAllPlaySound();
+    toast.error("HEPSI SILINDI...")
   };
-  const [theme, setTheme] = useState(getTheme);
-  //!Theme local kaydet theme degisir degismez []
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-  }, [theme]);
 
-  //! local degistike anlik calisir
+  //   //? toogleComplted degsimini izlemek icin kullanildi
+  //   useEffect(() => {
+  //   console.log("Todos güncellendi:", todos);
+  // }, [todos]);
 
-  const toogleTema = () => {
-    setTheme((tema) => (tema === "dark" ? "light" : "dark"));
-  };
+  //? first once inputtan veri alip prop yollayacagiz
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
-      const text = inputRef.current.value.trim();
+      const inputText = inputRef.current.value.trim();
+      if (!inputText) {
+        toast.error("Boş todo eklenemez");
+        return;
+      }
 
-      if (!text) return;
-      // map dizi doner o yuzden diziye cevridir sperad ile
-      setValue((pre) => [
-        ...pre,
+      //?gelen anlik verie id completed ekliyoruz
+
+      SetTodos((todos) => [
+        ...todos,
         {
           id: crypto.randomUUID(),
-          text: text,
+          text: inputText,
           completed: false,
         },
       ]);
-      //input u temizler
+      AddPlaySound();
+      toast.success("Basariyla eklendi")
+
       inputRef.current.value = "";
     }
   };
 
-  //!Confirm ekle delete icon // clear completed // thema ekle // localstroge(thema,todos)
-
-  ///? Prop yollanacak fonksiyonlar
-
-  const Clearcompleted = () => {
-    setValue([]);
-  };
+  //? silme islemi
 
   const handleDelete = (id) => {
-    let dogruMu = confirm("Silmek istediginiz emin misiniz?");
+    let isOkey = confirm("Silmek istediginize emin misiniz?");
 
-    if (dogruMu !== false) {
-      setValue((prev) => prev.filter((item) => item.id !== id));
+    if (isOkey === true) {
+      SetTodos((todo) => todo.filter((tod) => tod.id !== id));
+       DeletePlaySound();
+    toast.success("Basariyla Silindi..")
     } else {
-      return;
+      toast.warn(" todo Silinmedi");
     }
+   
   };
 
-  //!todonun icinde statusu completed alarak guncelleyecek
+  //? SetTodostaki verileri completed degerine gore filtreyip map icin hazirlaycagiz
 
-  const toogleCompleted = (id) => {
-    setValue((prev) =>
-      prev.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-
-  const visibleTodo = value.filter((todo) => {
-    if (filter === "") return;
+  const filterCard = todos.filter((todo) => {
     if (filter === "active") return !todo.completed;
     if (filter === "completed") return todo.completed;
-    console.log(todo, "visibe");
-
     return true;
   });
 
-  //?
+  //? Todos icinde completed icinde ki veriyi toogle seklinde
+
+  const toogleCompleted = (id) => {
+    SetTodos((todos) =>
+      todos.map((tod) =>
+        tod.id === id ? { ...tod, completed: !tod.completed } : tod
+      )
+    );
+    console.log("tetiklendi toogle");
+  };
+
+  //? cift tiklayinca guncellemek icin kullnacagiz
+
+  const DoubleClickHandle = (editId, newText) => {
+    SetTodos((todos) =>
+      todos.map((tod) => (tod.id === editId ? { ...tod, text: newText } : tod))
+    );
+
+    UpdatePlaySound();
+    toast.success("Basariyla Guncellendi");
+  };
 
   return (
-    <div className={`container ${theme === "dark" ? "dark" : "light"}`}>
+
+    <> 
+ <ToastContainer
+        position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="dark"
+transition={Bounce}
+      />
+    
+    <div className={`container ${theme === "dark" ? "dark":"light"}`}>
       <p className="title">todos</p>
 
-      {/* <img
-        onClick={() => {
-          onToggle(todo.id)
-        }}
-        className="circile-icons"
-        src={ 
-          todo.completed ? "/assets/empty.png" :"/assets/circle.png"
-        }
-        alt=""
-         
-      /> */}
-
-      <img
-        className="tema-img"
-        onClick={toogleTema}
-        src={
-          theme === "dark" ? "/assets/dark-tema.png" : "/assets/light-tema.png"
-        }
-        alt=""
-      />
+      <img className="tema-img"
+      onClick={ToogleTheme}
+      src={theme ? "assets/dark-tema.png":"assets/light-tema.png" } alt="" />
 
       <div className="input-wrapper">
-        {value && (
-          <img className="img-arrow" src="assets/arrow-down-01.png" alt="" />
-        )}
+        <img className="img-arrow" src="assets/arrow-down-01.png" alt="" />
         <input
-          ref={inputRef}
-          type="text"
-          onKeyDown={handleEnter}
           className="input"
+          type="text"
+          ref={inputRef}
+          onKeyDown={handleEnter}
           placeholder="What needs to be done?"
         />
       </div>
 
-      {/* eklenen valuler */}
-      {/* //? benim yaptigim yol */}
+      {/* card Component */}
 
-      {/* {value?.map((val,index) => (
-       <Card
-       // obje olarak yolla
-        value={val}
-        key={val.id}
-        // prop adi neyse child o adi yakala 
-        handleDelete={handleDelete}
-          />
-       
+      {/* {todos.map((todo) => (
+      <Card DoubleClickHandle={DoubleClickHandle} handleDelete={handleDelete} todos={todo} ToggleComp={ToggleComp} key={todo.id} />
       ))} */}
 
-      {/* //? chatin yaptigi yol */}
-
-      {visibleTodo.map((todo) => (
-        <Card
-          key={todo.id}
-          todo={todo}
-          onToggle={toogleCompleted}
-          handleDelete={handleDelete}
-        />
-      ))}
+      {filterCard.map((todos) => {
+        return (
+          <Card
+            todos={todos}
+            key={todos.id}
+            handleDelete={handleDelete}
+            toogleCompleted={toogleCompleted}
+            DoubleClickHandle={DoubleClickHandle}
+          />
+        );
+      })}
 
       {/* footer  */}
-
-      {value && (
-        <div className="input-down">
-          <p> {value.length} item left</p>
-          <div className="input-down-inner">
-            <a
-              href="#"
-              style={{ color: theme === "dark" ? "white" : "black" }}
-              onClick={() => setFilter("all")}
-            >
-              All
-            </a>
-            <a
-              href="#"
-              style={{ color: theme === "dark" ? "white" : "black" }}
-              onClick={() => setFilter("active")}
-            >
-              Active
-            </a>
-            <a
-              href="#"
-              style={{ color: theme === "dark" ? "white" : "black" }}
-              onClick={() => setFilter("completed")}
-            >
-              Completed
-            </a>
-          </div>
-          <a href="#" onClick={Clearcompleted}>
-            Clear completed
+      <div className="input-down">
+        <p> {todos.length} item left</p>
+        <div className="input-down-inner">
+          <a
+            style={{
+              color: theme ==="dark" ? "white" : "black",
+            }}
+            onClick={()=>SetFilter("all")}
+            href="#"
+          >
+            All
+          </a>
+          <a
+            style={{
+              color: theme === "dark" ? "white" : "black",
+            }}
+            onClick={() => SetFilter("active")}
+            href="#"
+          >
+            Active
+          </a>
+          <a
+            style={{
+              color: theme === "dark" ? "white" : "black",
+            }}
+            onClick={() => SetFilter("completed")}
+            href="#"
+          >
+            Completed
           </a>
         </div>
-      )}
+        <a onClick={() => ClearAll()} href="#">
+          Clear completed
+        </a>
+      </div>
     </div>
+    </>
   );
 }
 
