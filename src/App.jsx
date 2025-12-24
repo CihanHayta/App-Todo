@@ -27,7 +27,7 @@ useEffect(()=>{
 },[theme])
 
   const ToogleTheme=()=>{    
-    SetTheme(theme => theme === "dark" ? "light" : "dark");
+    SetTheme(theme => theme === "light" ? "dark" : "light");
   }
 //!TODO Local
   const getLocal = () => {
@@ -47,9 +47,10 @@ useEffect(()=>{
     if (isSure === true) {
       localStorage.clear();
       SetTodos([]);
-    }
-    ClearAllPlaySound();
+       ClearAllPlaySound();
     toast.error("HEPSI SILINDI...")
+    }
+   
   };
 
   //   //? toogleComplted degsimini izlemek icin kullanildi
@@ -115,7 +116,7 @@ useEffect(()=>{
         tod.id === id ? { ...tod, completed: !tod.completed } : tod
       )
     );
-    console.log("tetiklendi toogle");
+   
   };
 
   //? cift tiklayinca guncellemek icin kullnacagiz

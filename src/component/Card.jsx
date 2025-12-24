@@ -11,6 +11,7 @@ const handleUpdate=(e)=>{
     let updateText=cardRef.current.value.trim();
     if(!updateText){
       alert("Icerik giriniz lutfen")
+      return;
     }
     DoubleClickHandle(todos.id,updateText)
     SetIsEdit(false)
